@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = MethodChannel('samples.flutter.dev/battery');
-  static const plat = MethodCall('sample.flutter.dev/device');
+  static const plat = MethodChannel('samples.flutter.dev/device');
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: _getBatteryLevel,
             ),
             Text(_batteryLevel),
+            ElevatedButton(
+              child: Text('Get Device Info'),
+              onPressed: _getDeviceInfo,
+            ),
+            Text(_deviceInfo),
           ],
         ),
       ),
@@ -54,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Get battery level.
   String _batteryLevel = 'Unknown battery level.';
+  String _deviceInfo = "Unknown Device Info";
 
   Future<void> _getBatteryLevel() async {
     String batteryLevel;
@@ -66,6 +72,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _batteryLevel = batteryLevel;
+    });
+  }
+
+  Future<void> _getDeviceInfo() async {
+    String deviceInfo;
+    try {
+      final String result = await plat.invokeMethod('getDeviceInfo');
+      deviceInfo = 'Device Id is $result.';
+    } on PlatformException catch (e) {
+      deviceInfo = "Failed to get device id: '${e.message}'.";
+    }
+
+    setState(() {
+      _deviceInfo = deviceInfo;
     });
   }
 }

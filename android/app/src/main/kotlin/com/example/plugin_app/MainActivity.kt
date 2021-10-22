@@ -1,5 +1,6 @@
 package com.example.plugin_app
 
+import android.annotation.SuppressLint
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -38,10 +39,10 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, ID).setMethodCallHandler {
             // Note: this method is invoked on the main thread.
             call, result ->
-            if (call.method == "deviceInfo") {
-                val _deviceInfo = deviceInfo()
+            if (call.method == "getDeviceInfo") {
+                val deviceInfo = deviceInfo()
 
-                result.success(_deviceInfo)
+                result.success(deviceInfo)
             } else {
                 result.notImplemented()
             }
@@ -63,11 +64,10 @@ class MainActivity : FlutterActivity() {
         return batteryLevel
     }
 
+    @SuppressLint("HardwareIds")
     private fun deviceInfo(): String {
 
-       val deviceId = Settings.Secure.getString(contentResolver, ANDROID_ID)
-
-        return deviceId
+        return Settings.Secure.getString(contentResolver, ANDROID_ID)
 
     }
 }
